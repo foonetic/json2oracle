@@ -18,8 +18,10 @@ class Oracle:
     def from_file(cls, path: str):
         if not os.path.exists(path):
             raise SystemExit(f'Invalid contract template path: {path}')
+            
         with open(path, 'r') as file:
             contents = file.read()
             raw = json.loads(contents)
         oracle = Oracle(raw['name'], raw['fields'], raw['space'])
+
         return oracle
