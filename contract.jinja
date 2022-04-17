@@ -1,0 +1,69 @@
+{% set pascal_oracle_name = to_pascal_case(oracle.name) -%}
+use anchor_lang::prelude::*;
+
+declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+#[program]
+mod {{ oracle.name }} {
+    use super::*;
+
+    pub fn create(ctx: Context<Create>) -> Result<()> {
+        let {{ oracle.name }} = &mut ctx.accounts.{{ oracle.name }};
+        let authority = &ctx.accounts.authority;
+        {{ oracle.name }}.authority = authority.key();
+        Ok(())
+    }
+
+    {% for field in oracle.fields %} 
+    pub fn set_{{field.name}}(ctx: Context<Set{{ to_pascal_case(field.name) }}>, new_{{ field.name }}: {{ field.data_type }}) -> Result<()> {
+        let {{ oracle.name }} = &mut ctx.accounts.{{ oracle.name }};
+        {{ oracle.name }}.{{ field.name }} = new_{{ field.name }};
+        Ok(())
+    } 
+    {% endfor %}
+
+    pub fn set_fields(ctx: Context<SetFields>,
+        {%- for field in oracle.fields %}
+        new_{{ field.name }}: {{ field.data_type }}, 
+        {%- endfor %}
+    ) -> Result<()> {
+        let {{ oracle.name }} = &mut ctx.accounts.{{ oracle.name }}; 
+        {%- for field in oracle.fields %} 
+        {{ oracle.name }}.{{ field.name }} = new_{{ field.name }}; 
+        {%- endfor %}
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct Create<'info> {
+    #[account(init, payer = authority, space = {{ oracle.space }})]
+    pub {{ oracle.name }}: Account<'info, {{ pascal_oracle_name }}>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct SetFields<'info> {
+    #[account(mut, has_one = authority)]
+    pub {{ oracle.name }}: Account<'info, {{ pascal_oracle_name }}>,
+    pub authority: Signer<'info>, 
+}
+
+{% for field in oracle.fields %}
+#[derive(Accounts)]
+pub struct Set{{to_pascal_case(field.name)}}<'info> {
+    #[account(mut, has_one = authority)]
+    pub {{ oracle.name }}: Account<'info, {{ pascal_oracle_name }}>,
+    pub authority: Signer<'info>,
+}
+{% endfor %}
+
+#[account]
+pub struct {{ pascal_oracle_name }} { 
+    pub authority: Pubkey, 
+    {%- for field in oracle.fields %} 
+    pub {{ field.name }}: {{field.data_type}},
+    {%- endfor %}
+}

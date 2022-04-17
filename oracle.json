@@ -1,0 +1,13 @@
+{
+    "name": "test_oracle",
+    "fields": [{
+            "name": "activated",
+            "data_type": "bool"
+        },
+        {
+            "name": "balance",
+            "data_type": "u64"
+        }
+    ],
+    "space": 10
+}
