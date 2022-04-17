@@ -17,7 +17,7 @@ class Oracle:
     @classmethod
     def from_file(cls, path: str):
         if not os.path.exists(path):
-            raise SystemExit(f'Invalid contract template path: {path}')
+            raise SystemExit(f'Invalid oracle schema path: {path}')
             
         with open(path, 'r') as file:
             contents = file.read()
