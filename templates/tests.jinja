@@ -1,0 +1,39 @@
+{% set pascal_oracle_name = to_pascal_case(oracle.name) -%}
+{% set camel_oracle_name = to_camel_case(oracle.name) -%}
+import * as anchor from "@project-serum/anchor";
+import { Program } from "@project-serum/anchor";
+import { PublicKey } from "@solana/web3.js";
+import { {{ pascal_oracle_name }} } from "../target/types/{{ oracle.name }}";
+
+describe("TestOracle", () => {
+    const provider = anchor.Provider.env();
+    anchor.setProvider(provider);
+
+    const program = anchor.workspace.{{ pascal_oracle_name }} as Program<{{ pascal_oracle_name }}>;
+    const authority = anchor.web3.Keypair.generate();
+    let oraclePk = null;
+    let oracleBump = null;
+
+    it("Created {{ pascal_oracle_name }}", async () => {
+        await provider.connection.confirmTransaction(
+            await provider.connection.requestAirdrop(authority.publicKey, 1000000000),
+            "confirmed"
+        );
+
+        const [pk, bump] = await PublicKey.findProgramAddress(
+            [Buffer.from(anchor.utils.bytes.utf8.encode("{{ pascal_oracle_name }}"))],
+            program.programId
+        );
+        oraclePk = pk;
+        oracleBump = bump;
+
+        await program.rpc.create({
+            accounts: {
+                {{ camel_oracle_name }}: oraclePk,
+                authority: authority.publicKey,
+                systemProgram: anchor.web3.SystemProgram.programId,
+            },
+            signers: [authority]
+        });
+    });
+});

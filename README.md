@@ -9,7 +9,6 @@ positional arguments:
   oracle_schema_path    Path to oracle schema
   contract_template_path
                         Path to contract template
-  space                 Space to allocate for the oracle
   ```
 
 ##### Example schema:
@@ -29,8 +28,8 @@ positional arguments:
 }
 ```
 ##### Required fields:
-| Name        | Type                            |
+| Name        | Description                     |
 | ----------- | -----------                     |
 | name        | Name of the oracle              |
-| fields      | List of (name, type)            |
+| fields      | List of data fields             |
 | space       | Amount of space to allocate     |

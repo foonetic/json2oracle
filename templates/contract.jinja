@@ -14,13 +14,13 @@ mod {{ oracle.name }} {
         Ok(())
     }
 
-    {% for field in oracle.fields %} 
+    {%- for field in oracle.fields %} 
     pub fn set_{{field.name}}(ctx: Context<Set{{ to_pascal_case(field.name) }}>, new_{{ field.name }}: {{ field.data_type }}) -> Result<()> {
         let {{ oracle.name }} = &mut ctx.accounts.{{ oracle.name }};
         {{ oracle.name }}.{{ field.name }} = new_{{ field.name }};
         Ok(())
     } 
-    {% endfor %}
+    {% endfor -%}
 
     pub fn set_fields(ctx: Context<SetFields>,
         {%- for field in oracle.fields %}
@@ -37,7 +37,11 @@ mod {{ oracle.name }} {
 
 #[derive(Accounts)]
 pub struct Create<'info> {
-    #[account(init, payer = authority, space = {{ oracle.space }})]
+    #[account(init, 
+              seeds = [b"{{ pascal_oracle_name }}"],
+              bump,
+              payer = authority, 
+              space = {{ oracle.space }})]
     pub {{ oracle.name }}: Account<'info, {{ pascal_oracle_name }}>,
     #[account(mut)]
     pub authority: Signer<'info>,
