@@ -36,4 +36,21 @@ describe("TestOracle", () => {
             signers: [authority]
         });
     });
+
+    {% for field in oracle.fields %}
+    it("Updated {{ field.name }}", async () => {
+        await provider.connection.confirmTransaction(
+            await provider.connection.requestAirdrop(authority.publicKey, 1000000000),
+            "confirmed"
+        );
+
+        await program.rpc.set{{ to_pascal_case(field.name) }}({
+            accounts: {
+                {{ camel_oracle_name }}: oraclePk,
+                authority: authority.publicKey,
+            },
+            signers: [authority]
+        });
+    });
+    {% endfor -%}
 });

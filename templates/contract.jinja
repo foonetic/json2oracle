@@ -14,7 +14,7 @@ mod {{ oracle.name }} {
         Ok(())
     }
 
-    {%- for field in oracle.fields %} 
+    {% for field in oracle.fields %} 
     pub fn set_{{field.name}}(ctx: Context<Set{{ to_pascal_case(field.name) }}>, new_{{ field.name }}: {{ field.data_type }}) -> Result<()> {
         let {{ oracle.name }} = &mut ctx.accounts.{{ oracle.name }};
         {{ oracle.name }}.{{ field.name }} = new_{{ field.name }};

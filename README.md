@@ -9,6 +9,7 @@ positional arguments:
   oracle_schema_path    Path to oracle schema
   contract_template_path
                         Path to contract template
+  tests_template_path   Path to tests template
   ```
 
 ##### Example schema:
