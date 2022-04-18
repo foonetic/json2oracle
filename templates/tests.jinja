@@ -5,7 +5,7 @@ import { Program } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { {{ pascal_oracle_name }} } from "../target/types/{{ oracle.name }}";
 
-describe("TestOracle", () => {
+describe("CoinMarketCapOracle", () => {
     const provider = anchor.Provider.env();
     anchor.setProvider(provider);
 
@@ -14,6 +14,7 @@ describe("TestOracle", () => {
     let oraclePk = null;
     let oracleBump = null;
 
+    // Create oracle.
     it("Created {{ pascal_oracle_name }}", async () => {
         await provider.connection.confirmTransaction(
             await provider.connection.requestAirdrop(authority.publicKey, 1000000000),
@@ -38,19 +39,46 @@ describe("TestOracle", () => {
     });
 
     {% for field in oracle.fields %}
-    it("Updated {{ field.name }}", async () => {
+    // Set {{ field.name }}.
+    it("Set {{ field.name }}", async () => {
         await provider.connection.confirmTransaction(
             await provider.connection.requestAirdrop(authority.publicKey, 1000000000),
             "confirmed"
         );
 
-        await program.rpc.set{{ to_pascal_case(field.name) }}({
-            accounts: {
-                {{ camel_oracle_name }}: oraclePk,
-                authority: authority.publicKey,
-            },
-            signers: [authority]
-        });
+        // You must add your own data to this.
+        // await program.rpc.set{{ to_pascal_case(field.name) }}(
+        //     new_{{ field.name }},
+        //     {
+        //         accounts: {
+        //             {{ camel_oracle_name }}: oraclePk,
+        //             authority: authority.publicKey,
+        //         },
+        //         signers: [authority]
+        //     }
+        // );
     });
-    {% endfor -%}
+    {% endfor %}
+
+    // Set all possible fields.
+    it("Set all fields", async () => {
+        await provider.connection.confirmTransaction(
+            await provider.connection.requestAirdrop(authority.publicKey, 1000000000),
+            "confirmed"
+        );
+
+        // You must add your own data to this.
+        // await program.rpc.setFields(
+        {%- for field in oracle.fields %}
+        //     new_{{ field.name }}, 
+        {%- endfor %}
+        //     {
+        //         accounts: {
+        //             {{ camel_oracle_name }}: oraclePk,
+        //             authority: authority.publicKey,
+        //         },
+        //         signers: [authority]
+        //     }
+        // );
+    });
 });

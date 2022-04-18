@@ -20,7 +20,7 @@ mod {{ oracle.name }} {
         {{ oracle.name }}.{{ field.name }} = new_{{ field.name }};
         Ok(())
     } 
-    {% endfor -%}
+    {% endfor %}
 
     pub fn set_fields(ctx: Context<SetFields>,
         {%- for field in oracle.fields %}
