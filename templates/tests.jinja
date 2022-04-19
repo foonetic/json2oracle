@@ -5,7 +5,7 @@ import { Program } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { {{ pascal_oracle_name }} } from "../target/types/{{ oracle.name }}";
 
-describe("CoinMarketCapOracle", () => {
+describe("{{ pascal_oracle_name }}", () => {
     const provider = anchor.Provider.env();
     anchor.setProvider(provider);
 
